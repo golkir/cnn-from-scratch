@@ -5,7 +5,6 @@ from forwardprop import *
 from backprop  import * 
 import lib as lib
 import matplotlib.pyplot as plt
-from gradient_check import *
 
 def gradient_check(cache, X, Y, gradients, parameters, layer_name, parameter_type, epsilon=1e-7):
 	grad_approx = []
