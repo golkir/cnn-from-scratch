@@ -13,13 +13,13 @@ def gradient_check(cache, X, Y, gradients, parameters, layer_name, parameter_typ
 		thetaplus[i] = thetaplus[i] + epsilon
 		cache_copy = copy.deepcopy(cache)
 		cache_copy[layer_name][parameter_type] = thetaplus.reshape(parameters.shape)
-		cache_copy = forward_test(X, cache_copy)
+		cache_copy = forwardprop(X, cache_copy)
 		loss_thetaplus = log_loss(Y.reshape(1,10), cache_copy['softmax'])
 		thetaminus = np.copy(parameters).flatten()
 		thetaminus[i] = thetaminus[i] - epsilon
 		cache_copy_2 = copy.deepcopy(cache)
 		cache_copy_2[layer_name][parameter_type] = thetaminus.reshape(parameters.shape)
-		cache_copy_2 = forward_test(X, cache_copy_2)
+		cache_copy_2 = forwardprop(X, cache_copy_2)
 		loss_thetaminus = log_loss(Y.reshape(1,10), cache_copy_2['softmax'])
 		dt = (loss_thetaplus  - loss_thetaminus) / (epsilon * 2 )
 		grad_approx.append(dt)
