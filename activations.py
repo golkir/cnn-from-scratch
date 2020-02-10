@@ -13,8 +13,8 @@ def sigmoid(x):
 	return special.expit(x)
 
 def sigmoid_dt(x):
-	dt = sigmoid(x) * (1 - sigmoid(x))
-	return dt 
+	s = sigmoid(x)
+	return s * (1 - s)
 
 def softmax (predictions):
 	return special.softmax(predictions)

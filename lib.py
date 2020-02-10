@@ -56,13 +56,6 @@ def zeropad2D (arr,pad_size=1):
 	return padded
 
 
-def sum_element_wise(arrlist):
-    # assumes len(arrlist) > 0
-    sum = arrlist[0].copy()
-    for a in arrlist[1:]:
-        sum += a
-    return sum
-
 def slidingArrSplit (arr,step):
 	slices = []
 	for index, item in enumerate(arr):
@@ -74,31 +67,6 @@ def slidingArrSplit (arr,step):
 			result = np.concatenate((sliceToEnd,sliceRest))
 			slices.append(result)
 	return np.asarray(slices)
-
-def splitArray():
-	arr = np.random.randint(1,33, (8,8))
-	kernel = (2,2)
-	rows,cols = arr.shape
-	k_rows, k_cols = kernel
-	col_split_indices = []
-	split_size = rows // k_rows - 1
-
-	k = k_rows
-	for i in range(split_size):
-		col_split_indices.append(k)
-		k +=2 
-	col_split = np.split(arr, col_split_indices, axis=1)
-	print (arr, 'Original array')
-	print (col_split, 'Splitted by columns')
-
-	full_split = []
-
-	for b in col_split: 
-		full_split.append(np.split(b,col_split_indices,axis=0))
-	print (arr, 'Original array')
-	print(full_split,'Full split')
-	full_split = np.asarray(full_split)
-	print (full_split.shape)
 
 
 def visualizeCost(history):

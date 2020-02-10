@@ -54,14 +54,12 @@ def maxpool_backprop(inp, kernel, d_L_d_out,):
     				d_L_d_input[i * 2 + i2, j * 2 + j2] = d_L_d_out[i, j]
     return d_L_d_input
 
-def test_maxpool_bprop():
-	grad = np.random.randint(1,15,(4,4))
-	image = np.random.randint(1,15,(8,8))
-	bp = maxpool_backprop(image,grad)
-	print(bp, 'Maxpool backprop')
-	print(image, 'Initial image')
-	print(grad, 'grad')
-
+def maxpool_run (inp, kernel):
+	kernel_r, kernel_c = kernel 
+	subsamples = np.zeros((inp.shape[0], inp.shape[1] // kernel_r, inp.shape[2] // kernel_c) )
+	for index in range(inp.shape[0]):
+		subsamples[index] = maxpool(inp[index],(kernel_r,kernel_c))
+	return subsamples
 
 # def maxpool_backprop(input,sampling_size,grad):
 # 	# test input 
@@ -81,21 +79,7 @@ def test_maxpool_bprop():
 
 # 	return maxpool_dt
 
-def maxpool_run (inp, kernel):
-	kernel_r, kernel_c = kernel 
-	subsamples = np.zeros((inp.shape[0], inp.shape[1] // kernel_r, inp.shape[2] // kernel_c) )
-	for index in range(inp.shape[0]):
-		subsamples[index] = maxpool(inp[index],(kernel_r,kernel_c))
-	return subsamples
 
-def maxpool_test():
-	i = np.random.randint(1,8, (8,8))
-	print(i, 'initial input')
-	maxp = maxpool(i, (2,2))
-	print (maxp, 'Maxpool result')
-	gr = np.random.randint(1,9,(4,4))
-	print(gr, 'Preudo gradient')
-	dt = maxpool_backprop(i, (2,2), gr)
-	print (dt, 'Maxpool derrivative')
+
 
 
