@@ -115,7 +115,7 @@ def sgd_online(training_set, labels, epochs):
 
 
 def batch_gd (training_set, labels, epochs):
-	lr = 0.2
+	lr = 0.5
 	weighted_avg_history = [{'parameters':0, 'biases': 0}]
 	cost_history = []
 
@@ -127,7 +127,7 @@ def batch_gd (training_set, labels, epochs):
 	          'softmax': None
 	}
 
-	N = 20
+	N = 10
 
 	permutation = np.random.permutation(N)
 

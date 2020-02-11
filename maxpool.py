@@ -36,23 +36,23 @@ def maxpool(input,sampling_field):
 def upsample(a, upsample_size):
 	return np.kron(a, np.ones(upsample_size, dtype=a.dtype))
 
-# def maxpool_backprop(inp, kernel, d_L_d_out,):
-#     '''
-#     Performs a backward pass of the maxpool layer.
-#     Returns the loss gradient for this layer's inputs.
-#     - d_L_d_out is the loss gradient for this layer's outputs.
-#     '''
+def maxpool_backprop(inp, kernel, d_L_d_out,):
+    '''
+    Performs a backward pass of the maxpool layer.
+    Returns the loss gradient for this layer's inputs.
+    - d_L_d_out is the loss gradient for this layer's outputs.
+    '''
 
-#     d_L_d_input = np.zeros(inp.shape)
+    d_L_d_input = np.zeros(inp.shape)
 
-#     for im_region, i, j in iterate_regions(inp):
-#     	h, w = im_region.shape
-#     	amax = np.amax(im_region, axis=(0, 1))
-#     	for i2 in range(h):
-#     		for j2 in range(w):
-#     			if im_region[i2, j2] == amax:
-#     				d_L_d_input[i * 2 + i2, j * 2 + j2] = d_L_d_out[i, j]
-#     return d_L_d_input
+    for im_region, i, j in iterate_regions(inp):
+    	h, w = im_region.shape
+    	amax = np.amax(im_region, axis=(0, 1))
+    	for i2 in range(h):
+    		for j2 in range(w):
+    			if im_region[i2, j2] == amax:
+    				d_L_d_input[i * 2 + i2, j * 2 + j2] = d_L_d_out[i, j]
+    return d_L_d_input
 
 def maxpool_run (inp, kernel):
 	kernel_r, kernel_c = kernel 
@@ -61,23 +61,23 @@ def maxpool_run (inp, kernel):
 		subsamples[index] = maxpool(inp[index],(kernel_r,kernel_c))
 	return subsamples
 
-def maxpool_backprop(input,sampling_size,grad):
-	# test input 
+# def maxpool_backprop(inp,sampling_size,grad):
+# 	# test input 
 	
-	f_rows,f_cols = sampling_size
-	i_rows, i_cols = input.shape 
-	max_mask = np.zeros(input.shape)
-	maxpool_dt = np.zeros(input.shape)
-	for i in range(0,i_rows,f_rows):
-		for c in range(0,i_cols,f_cols):
-			field = input[i : i + f_rows, c : c + f_cols]
-			unravel = np.unravel_index(np.argmax(field), field.shape)
-			max_mask [i : i + f_rows, c : c + f_cols][unravel[0],unravel[1]] = 1
+# 	f_rows,f_cols = sampling_size
+# 	i_rows, i_cols = inp.shape 
+# 	max_mask = np.zeros(inp.shape)
+# 	maxpool_dt = np.zeros(inp.shape)
+# 	for i in range(0,i_rows,f_rows):
+# 		for c in range(0,i_cols,f_cols):
+# 			field = input[i : i + f_rows, c : c + f_cols]
+# 			unravel = np.unravel_index(np.argmax(field), field.shape)
+# 			max_mask [i : i + f_rows, c : c + f_cols][unravel[0],unravel[1]] = 1
 
-	up = upsample(grad, sampling_size )
-	maxpool_dt = max_mask * up 
+# 	up = upsample(grad, sampling_size )
+# 	maxpool_dt = max_mask * up 
 
-	return maxpool_dt
+# 	return maxpool_dt
 
 # def maxpool_test():
 # 	init = np.random.randint(1,8,(10,10))

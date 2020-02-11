@@ -95,9 +95,9 @@ def forwardprop(image,cache):
 	"""
 	C3 Dense Layer (fully connected)
 	Input: 16X5X5
-	Flatten: 400X1
-	Weights: 120X400
-	Output: 120X1 
+	Flatten: 1X400
+	Weights: 400X120
+	Output: 1X120
 	"""
 
 	flatten = cache['C2']['sigmoid'].flatten().reshape(1,400)
@@ -108,8 +108,8 @@ def forwardprop(image,cache):
 
 	"""
 	Sigmoid Activation
-	Input: 120X1
-	Output: 120X1
+	Input: 1X120
+	Output: 1X120
 	"""
 
 	cache['C3']['sigmoid'] = activations.sigmoid(cache['C3']['fmaps'])
@@ -118,9 +118,9 @@ def forwardprop(image,cache):
 	
 	"""
 	F6: Dense layer (fully connected) 
-	Input: 120X1
-	Weights: 84X120
-	Output: 84X1 
+	Input: 1X120
+	Weights: 120X84
+	Output: 1X84
 
 	"""
 
@@ -130,16 +130,16 @@ def forwardprop(image,cache):
 
 	"""
 	Sigmoid activation
-	Input: 84X1
-	Output: 84X1
+	Input: 1X84
+	Output: 1X84
 	"""
 
 	cache['F6']['sigmoid'] = activations.sigmoid(cache['F6']['fmaps'])
 
 	"""
 	F7: Dense Layer (fully connected)
-	Input: 84X1
-	Weights: 10X84
+	Input: 1X84
+	Weights: 84X10
 	Output: 1X10
 	"""
 

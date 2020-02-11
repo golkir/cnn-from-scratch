@@ -18,7 +18,7 @@ def backprop(cache, example, label):
 
 	"""
 	Gradient of loss w.r.t to F7 parameters
-	Dimensions:  (84X1 .dot 1X10).T = 10X84
+	Dimensions:  84X10
 	"""
 
 	dL_dF7_parameters = cache['F6']['sigmoid'].T.dot(dL_dSoftmax)
@@ -27,14 +27,14 @@ def backprop(cache, example, label):
 
 	"""
 	F7 Biases Gradient
-	Output: 10X1
+	Output: 1X10
 	"""
 	dL_dF7_biases = dL_dSoftmax
 
 
 	"""
 	Gradient of loss with respect to F7 layer inputs
-	Output: (1X10 .dot 10X84 ).T = 84X1
+	Output: 1X84
 	"""
 
 	dL_dF7 = dL_dSoftmax.dot(cache['F7']['filters'].T)
@@ -43,7 +43,7 @@ def backprop(cache, example, label):
 
 	"""
 	Local derrivative of F6 sigmoid
-	Output: 84X1
+	Output: 1X84
 	"""
 
 	dF6_sigmoid = activations.sigmoid_dt(cache['F6']['fmaps'])
@@ -51,7 +51,7 @@ def backprop(cache, example, label):
 
 	"""
 	Gradient of loss w.r.t to F6 sigmoid
-	Output: 84X1 * 84X1 = 84X1 (Gadamard product)
+	Output: 1X84 * 1X84 = 1X84 (Gadamard product)
 
 	"""
 
@@ -61,7 +61,7 @@ def backprop(cache, example, label):
 
 	"""
 	Gradient of loss w.r.t F6 parameters
-	Output: 84X1 .dot 120X1.T = 84X120 
+	Output: 120X84
 	"""
 
 	dL_dF6_parameters = cache['C3']['sigmoid'].T.dot(dL_dF6_sigmoid)
@@ -82,7 +82,7 @@ def backprop(cache, example, label):
 
 	"""
 	Gradient of loss w.r.t F6 inputs 
-	Output: 84X120.T .dot 84X1  = 120X1
+	Output: 1X120
 	"""
 
 	dL_dF6 = dL_dF6_sigmoid.dot(cache['F6']['filters'].T)
@@ -94,7 +94,7 @@ def backprop(cache, example, label):
 
 	"""
 	C3 Sigmoid Local Derrivative
-	Output: 120X1
+	Output: 1X120
 	"""
 
 	dC3_sigmoid = activations.sigmoid_dt(cache['C3']['fmaps'])
@@ -105,7 +105,7 @@ def backprop(cache, example, label):
 
 	"""
 	Gradient of loss with respect to C3 sigmoid 
-	Output: 120 X 1  * 120 X 1 = 120 X 1 ( Gadamard product)
+	Output: 1X120  * 1X120 = 1X120 ( Gadamard product)
 
 	"""
 	dL_dC3_sigmoid = dL_dF6 * dC3_sigmoid
@@ -116,7 +116,7 @@ def backprop(cache, example, label):
 
 	"""
 	Gradient of loss with respect to C3 parameters 
-	Output: 120X1 .dot 1X400 = 120X400
+	Output: 400X120
 	"""
 	dL_dC3_parameters =  cache['C2']['sigmoid'].flatten().reshape(400,1).dot(dL_dC3_sigmoid)
 
@@ -138,7 +138,7 @@ def backprop(cache, example, label):
 	
 	"""
 	Gradient of loss with respect to C3 Layer Inputs
-	Output: 120X1.T .dot 120X400 = 1X400 = 16X5X5
+	Output: 16X5X5
 
 	"""
 
@@ -222,7 +222,7 @@ def backprop(cache, example, label):
 	"""
 	fconvs = []
 	for g in range(dL_dS2_maxpool.shape[0]):
-		fconv = signal.convolve2d(cache['C2']['filters'][g], dL_dS2_maxpool[g], mode='full')
+		fconv = signal.convolve2d(dL_dS2_maxpool[g], cache['C2']['filters'][g],  mode='full')
 		fconvs.append(fconv)
 	fconvs = np.sum(np.asarray(fconvs),axis=0)
 
@@ -259,7 +259,12 @@ def backprop(cache, example, label):
 
 	"""
 
-	dL_dC1_maxpool = np.asarray([ maxpool_backprop(cache['C1']['fmaps'][sigmoid_i], (2,2), sigmoid) for sigmoid_i, sigmoid in enumerate(dL_dC1_sigmoid) ])
+	dL_dC1_maxpool = []
+
+	for sigmoid in range(dL_dC1_sigmoid.shape[0]):
+		dt = maxpool_backprop(cache['C1']['fmaps'][sigmoid], (2,2), dL_dC1_sigmoid[sigmoid])
+		dL_dC1_maxpool.append(dt)
+	dL_dC1_maxpool = np.asarray(dL_dC1_maxpool)
 
 
 
@@ -272,7 +277,12 @@ def backprop(cache, example, label):
 
 	"""
 
-	dL_dC1_parameters = np.asarray([signal.correlate(example, dL_dC1_maxpool[i], mode='valid', method='direct') for i in range(0,dL_dC1_maxpool.shape[0])])
+	dL_dC1_parameters = [] 
+
+	for f in range(dL_dC1_maxpool.shape[0]):
+		dL_dC1_parameters.append(signal.correlate(example, dL_dC1_maxpool[f], mode='valid', method='direct'))
+
+	dL_dC1_parameters = np.asarray(dL_dC1_parameters)
 
 
 
