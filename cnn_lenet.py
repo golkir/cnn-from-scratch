@@ -14,11 +14,11 @@ y_train = lib.to_onehot(y_train).astype(np.float64)
 x_test = np.pad(x_test, [(0,0),(1,1), (1,1)], 'constant').astype(np.float64)
 y_test = lib.to_onehot(y_test).astype(np.float64)
 
-trained_model = sgd_online(x_train, y_train, 5)
+# trained_model = sgd_online(x_train, y_train, 5)
 
-predict(trained_model, x_test, y_test)
+# predict(trained_model, x_test, y_test)
 
-
+batch_gd (x_train, y_train, 1000)
 
 
 

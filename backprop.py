@@ -11,17 +11,17 @@ def backprop(cache, example, label):
 
 	"""
 
-	dL_dSoftmax = cache['softmax'] - label
+	dL_dSoftmax = cache['softmax'] - label.reshape(1,10)
 
 	
-	# print (dL_dSoftmax.shape, 'Shape of gradient of loss w.r.t to softmax')
+	# print (dL_dSoftmax, 'Shape of gradient of loss w.r.t to softmax')
 
 	"""
 	Gradient of loss w.r.t to F7 parameters
 	Dimensions:  (84X1 .dot 1X10).T = 10X84
 	"""
 
-	dL_dF7_parameters = cache['F6']['sigmoid'].dot(dL_dSoftmax).T
+	dL_dF7_parameters = cache['F6']['sigmoid'].T.dot(dL_dSoftmax)
 
 
 
@@ -29,8 +29,7 @@ def backprop(cache, example, label):
 	F7 Biases Gradient
 	Output: 10X1
 	"""
-	dL_dF7_biases = dL_dSoftmax.T
-
+	dL_dF7_biases = dL_dSoftmax
 
 
 	"""
@@ -38,7 +37,7 @@ def backprop(cache, example, label):
 	Output: (1X10 .dot 10X84 ).T = 84X1
 	"""
 
-	dL_dF7 = dL_dSoftmax.dot(cache['F7']['filters']).T
+	dL_dF7 = dL_dSoftmax.dot(cache['F7']['filters'].T)
 
 
 
@@ -65,7 +64,7 @@ def backprop(cache, example, label):
 	Output: 84X1 .dot 120X1.T = 84X120 
 	"""
 
-	dL_dF6_parameters = dL_dF6_sigmoid.dot(cache['C3']['sigmoid'].T)
+	dL_dF6_parameters = cache['C3']['sigmoid'].T.dot(dL_dF6_sigmoid)
 
 
 
@@ -86,7 +85,7 @@ def backprop(cache, example, label):
 	Output: 84X120.T .dot 84X1  = 120X1
 	"""
 
-	dL_dF6 = cache['F6']['filters'].T.dot(dL_dF6_sigmoid)
+	dL_dF6 = dL_dF6_sigmoid.dot(cache['F6']['filters'].T)
 
 
 
@@ -119,7 +118,7 @@ def backprop(cache, example, label):
 	Gradient of loss with respect to C3 parameters 
 	Output: 120X1 .dot 1X400 = 120X400
 	"""
-	dL_dC3_parameters = dL_dC3_sigmoid.dot(cache['C2']['sigmoid'].flatten().reshape(1,400))
+	dL_dC3_parameters =  cache['C2']['sigmoid'].flatten().reshape(400,1).dot(dL_dC3_sigmoid)
 
 
 
@@ -143,7 +142,7 @@ def backprop(cache, example, label):
 
 	"""
 
-	dL_dC3 = dL_dC3_sigmoid.T.dot(cache['C3']['filters']).reshape(16,5,5)
+	dL_dC3 = dL_dC3_sigmoid.dot(cache['C3']['filters'].T).reshape(16,5,5)
 
 
 
@@ -223,7 +222,7 @@ def backprop(cache, example, label):
 	"""
 	fconvs = []
 	for g in range(dL_dS2_maxpool.shape[0]):
-		fconv = signal.convolve2d(dL_dS2_maxpool[g], cache['C2']['filters'][g], mode='full')
+		fconv = signal.convolve2d(cache['C2']['filters'][g], dL_dS2_maxpool[g], mode='full')
 		fconvs.append(fconv)
 	fconvs = np.sum(np.asarray(fconvs),axis=0)
 

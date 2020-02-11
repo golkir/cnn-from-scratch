@@ -73,11 +73,11 @@ def predict(model,dataset, labels):
 
 
 def sgd_online(training_set, labels, epochs):
-	cache = { 'C1': {'fmaps': None, 'bias': np.ones((8,1,1)), 'filters': lib.init_weights_glorot((8,3,3), 900, 6272), 'maxpool': None, 'sigmoid': None },
-	          'C2': {'fmaps': None, 'filters': lib.init_weights_glorot((16,5,5), 1568, 1600), 'bias': np.ones((16,1,1)) , 'maxpool': None, 'sigmoid': None },
-	          'C3': {'fmaps': None, 'filters': lib.init_weights_glorot((120,400), 400, 120), 'bias': np.ones((120,1)), 'sigmoid': None},
-	          'F6': {'fmaps': None, 'filters': lib.init_weights_glorot((84,120), 120, 84), 'bias': np.ones((84,1)), 'sigmoid': None},
-	          'F7': {'fmaps': None, 'filters': lib.init_weights_glorot((10,84),84,10), 'bias': np.ones((10,1))},
+	cache = { 'C1': {'fmaps': None, 'bias': np.zeros((8,1,1)), 'filters': lib.init_weights_glorot((8,3,3), 900, 6272), 'maxpool': None, 'sigmoid': None },
+	          'C2': {'fmaps': None, 'filters': lib.init_weights_glorot((16,5,5), 1568, 1600), 'bias': np.zeros((16,1,1)) , 'maxpool': None, 'sigmoid': None },
+	          'C3': {'fmaps': None, 'filters': lib.init_weights_glorot((400,120), 400, 120), 'bias': np.zeros((1,120)), 'sigmoid': None},
+	          'F6': {'fmaps': None, 'filters': lib.init_weights_glorot((120,84), 120, 84), 'bias': np.zeros((1,84)), 'sigmoid': None},
+	          'F7': {'fmaps': None, 'filters': lib.init_weights_glorot((84,10),84,10), 'bias': np.zeros((1,10))},
 	          'softmax': None
 	}
 	N = training_set.shape[0]
@@ -115,15 +115,15 @@ def sgd_online(training_set, labels, epochs):
 
 
 def batch_gd (training_set, labels, epochs):
-	lr = 0.01
+	lr = 0.2
 	weighted_avg_history = [{'parameters':0, 'biases': 0}]
 	cost_history = []
 
-	cache = { 'C1': {'fmaps': None, 'bias': np.ones((8,1,1)), 'filters': lib.init_weights_glorot((8,3,3), 900, 6272), 'maxpool': None, 'sigmoid': None },
-	          'C2': {'fmaps': None, 'filters': lib.init_weights_glorot((16,5,5), 1568, 1600), 'bias': np.ones((16,1,1)) , 'maxpool': None, 'sigmoid': None },
-	          'C3': {'fmaps': None, 'filters': lib.init_weights_glorot((120,400), 400, 120), 'bias': np.ones((120,1)), 'sigmoid': None},
-	          'F6': {'fmaps': None, 'filters': lib.init_weights_glorot((84,120), 120, 84), 'bias': np.ones((84,1)), 'sigmoid': None},
-	          'F7': {'fmaps': None, 'filters': lib.init_weights_glorot((10,84),84,10), 'bias': np.ones((10,1))},
+	cache = { 'C1': {'fmaps': None, 'bias': np.zeros((8,1,1)), 'filters': lib.init_weights_glorot((8,3,3), 900, 6272), 'maxpool': None, 'sigmoid': None },
+	          'C2': {'fmaps': None, 'filters': lib.init_weights_glorot((16,5,5), 1568, 1600), 'bias': np.zeros((16,1,1)) , 'maxpool': None, 'sigmoid': None },
+	          'C3': {'fmaps': None, 'filters': lib.init_weights_glorot((400,120), 400, 120), 'bias': np.zeros((1,120)), 'sigmoid': None},
+	          'F6': {'fmaps': None, 'filters': lib.init_weights_glorot((120,84), 120, 84), 'bias': np.zeros((1,84)), 'sigmoid': None},
+	          'F7': {'fmaps': None, 'filters': lib.init_weights_glorot((84,10),84,10), 'bias': np.zeros((1,10))},
 	          'softmax': None
 	}
 
@@ -176,7 +176,7 @@ def batch_gd (training_set, labels, epochs):
 
 		# momentum_bias = 0.9 * weighted_avg_history[-1]['biases'] + 0.1 * batch_grads_biases[0]
 
-		cache = update_weights(example_grad['parameters'], example_grad['biases'], cache, lr)
+		cache = update_weights(batch_grads_params[0], batch_grads_biases[0], cache, lr)
 
 		# weighted_avg_history.append({'parameters': momentum_params, 'biases': momentum_bias})
 

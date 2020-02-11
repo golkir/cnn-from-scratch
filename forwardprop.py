@@ -100,9 +100,9 @@ def forwardprop(image,cache):
 	Output: 120X1 
 	"""
 
-	flatten = cache['C2']['sigmoid'].flatten().reshape(400,1)
+	flatten = cache['C2']['sigmoid'].flatten().reshape(1,400)
 
-	cache['C3']['fmaps'] = cache['C3']['filters'].dot(flatten) + cache['C3']['bias']
+	cache['C3']['fmaps'] = flatten.dot(cache['C3']['filters']) + cache['C3']['bias']
 	
 	# print(cache['C3']['fmaps'].shape , 'C3 fmaps')
 
@@ -124,7 +124,7 @@ def forwardprop(image,cache):
 
 	"""
 
-	cache['F6']['fmaps'] = cache['F6']['filters'].dot(cache['C3']['sigmoid']) + cache['F6']['bias']
+	cache['F6']['fmaps'] = cache['C3']['sigmoid'].dot(cache['F6']['filters']) + cache['F6']['bias']
 
 	# print(cache ['F6']['fmaps'].shape, 'F6 fmaps')
 
@@ -143,14 +143,14 @@ def forwardprop(image,cache):
 	Output: 1X10
 	"""
 
-	cache['F7']['fmaps'] = cache['F7']['filters'].dot(cache['F6']['sigmoid']) + cache['F7']['bias']
+	cache['F7']['fmaps'] = cache['F6']['sigmoid'].dot(cache['F7']['filters']) + cache['F7']['bias']
 
 	"""
 	Softmax Activation
 	Output: 1X10
 
 	"""
-	cache['softmax'] = activations.softmax(cache['F7']['fmaps']).T
+	cache['softmax'] = activations.softmax(cache['F7']['fmaps'])
 
 	# print(cache['softmax'].shape, 'Softmax result')
 
